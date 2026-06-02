@@ -7,11 +7,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float forcaPulo = 5f;
 
     [Header("Pulo")]
-    [SerializeField] private float raioDeteccao = 0.2f;
-    [SerializeField] private LayerMask camadaChao;
+    [SerializeField] private float distanciaDeteccao = 0.1f;
 
     private Rigidbody2D rb;
     private Animator animator;
+    private Collider2D collider2D;
     private float inputMovimento;
     private bool estaNoChao;
     private Vector2 direcao = Vector2.right;
@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        collider2D = GetComponent<Collider2D>();
     }
 
     void Update()
@@ -27,10 +28,10 @@ public class PlayerMovement : MonoBehaviour
         // Entrada de movimento
         inputMovimento = Input.GetAxis("Horizontal");
 
-        // Detectar se está no chão
-        estaNoChao = Physics2D.OverlapCircle(transform.position, raioDeteccao, camadaChao);
+        // Detectar se está no chão usando raycasts
+        DetectarSolo();
 
-        // Pulo
+        // Pulo - só permite se estiver tocando o chão
         if (Input.GetKeyDown(KeyCode.Space) && estaNoChao)
         {
             Pular();
@@ -44,6 +45,31 @@ public class PlayerMovement : MonoBehaviour
     {
         // Aplicar movimento
         Mover();
+    }
+
+    private void DetectarSolo()
+    {
+        // Obter os limites do collider
+        Bounds bounds = collider2D.bounds;
+
+        // Posição de detecção na base do personagem
+        Vector2 posicaoDeteccao = new Vector2(bounds.center.x, bounds.min.y - 0.05f);
+
+        // Fazer raycast para baixo com distância maior
+        RaycastHit2D raycast = Physics2D.Raycast(posicaoDeteccao, Vector2.down, distanciaDeteccao);
+
+        // Debugar o raycast
+        Debug.DrawRay(posicaoDeteccao, Vector2.down * distanciaDeteccao, raycast.collider != null ? Color.green : Color.red);
+
+        // Verificar se acertou algo com a tag "chao"
+        if (raycast.collider != null && raycast.collider.CompareTag("chao"))
+        {
+            estaNoChao = true;
+        }
+        else
+        {
+            estaNoChao = false;
+        }
     }
 
     private void Mover()
@@ -80,11 +106,10 @@ public class PlayerMovement : MonoBehaviour
         float velocidadeAbsoluta = Mathf.Abs(rb.linearVelocity.x);
         animator.SetFloat("velocity", velocidadeAbsoluta);
 
-        // Verificar se está pulando (velocidade Y positiva)
-        bool estaPulando = rb.linearVelocity.y > 0.1f;
-        animator.SetBool("jump", estaPulando && !estaNoChao);
+        // Jump = true enquanto não está tocando o chão (está no ar)
+        animator.SetBool("jump", !estaNoChao);
 
-        // Verificar se está caindo (velocidade Y negativa)
+        // Fall = true quando está caindo e não está no chão
         bool estaCaindo = rb.linearVelocity.y < -0.1f;
         animator.SetBool("fall", estaCaindo && !estaNoChao);
     }

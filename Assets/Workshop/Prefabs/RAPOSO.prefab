@@ -204,7 +204,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   velocidadeMovimento: 5
   forcaPulo: 5
-  raioDeteccao: 0.2
-  camadaChao:
-    serializedVersion: 2
-    m_Bits: 1
+  distanciaDeteccao: 0.01
