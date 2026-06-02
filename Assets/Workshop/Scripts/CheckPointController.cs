@@ -3,6 +3,7 @@ using UnityEngine;
 public class CheckPointController : MonoBehaviour
 {
     [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private GameObject parentPlayer;
     private GameObject playerAtual;
 
     void Start()
@@ -31,6 +32,7 @@ public class CheckPointController : MonoBehaviour
 
         // Instanciar o novo player na posição do checkpoint
         playerAtual = Instantiate(playerPrefab, transform.position, Quaternion.identity);
+        playerAtual.transform.SetParent(parentPlayer.transform); // Definir o parent do novo player
         Debug.Log("Novo Player criado em: " + transform.position);
     }
 }

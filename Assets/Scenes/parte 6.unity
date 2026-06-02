@@ -1325,6 +1325,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: checkpoint
       objectReference: {fileID: 0}
+    - target: {fileID: 1342247882140373901, guid: 73516fa6b8218a74581df22373e50a2e, type: 3}
+      propertyPath: parentPlayer
+      value: 
+      objectReference: {fileID: 659873790}
+    - target: {fileID: 1342247882140373901, guid: 73516fa6b8218a74581df22373e50a2e, type: 3}
+      propertyPath: playerPrefab
+      value: 
+      objectReference: {fileID: 7109285202388132414, guid: 0215121d819f66b47a5651940871e353, type: 3}
     - target: {fileID: 6394895358815345256, guid: 73516fa6b8218a74581df22373e50a2e, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.99
